@@ -1,6 +1,6 @@
 window.addEventListener('load', function() {
     let playerNum;
-    const socket = io('http://ec2-3-147-8-15.us-east-2.compute.amazonaws.com:3000');
+    const socket = io('https://ec2-3-147-8-15.us-east-2.compute.amazonaws.com:3000');
     socket.on('init', handleInit);
     function handleInit(msg) {
         playerNum = msg;
