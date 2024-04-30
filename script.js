@@ -1,10 +1,14 @@
 window.addEventListener('load', function() {
     let playerNum;
-    const socket = io('http://ec2-3-147-8-15.us-east-2.compute.amazonaws.com:3000');
+    //const socket = io('http://ec2-3-147-8-15.us-east-2.compute.amazonaws.com:3000');
+    const socket = io('http://192.168.68.108:3000')
     socket.on('init', handleInit);
     function handleInit(msg) {
         playerNum = msg;
+        console.log(playerNum);
         socket.on('newstate', load);
+        socket.on('newplayernum', changePlayerNum);
+        
 
         // canvas setup
         const canvas = document.getElementById('canvas1');
@@ -53,6 +57,12 @@ window.addEventListener('load', function() {
                 canvas.height = window.innerHeight;
             }
 
+        }
+
+        function changePlayerNum(playernum) {
+            playerNum = playernum;
+            console.log('new playernum ' + playerNum)
+            
         }
     }
 
