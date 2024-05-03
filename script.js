@@ -1,7 +1,7 @@
 window.addEventListener('load', function() {
     let playerNum;
-    //const socket = io('http://ec2-3-147-8-15.us-east-2.compute.amazonaws.com:3000');
-    const socket = io('http://192.168.68.108:3000')
+    const serverIP = prompt("Enter the local IP:port of the server you are connecting to, or public DNS if using the public server.")
+    const socket = io(serverIP)
     socket.on('init', handleInit);
     function handleInit(msg) {
         playerNum = msg;
