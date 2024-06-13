@@ -11,7 +11,6 @@ window.addEventListener('load', function() {
     // player initiation; recieves index in player list from server
     function handleInit(msg) {
         playerNum = msg;
-        console.log(playerNum);
         
         socket.on('newstate', load);
         socket.on('newplayernum', changePlayerNum);
@@ -54,6 +53,7 @@ window.addEventListener('load', function() {
         function load(state) {
             // get state
             state = JSON.parse(state);
+            thisplayer = state.players[playerNum]
 
             // reset canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -76,12 +76,19 @@ window.addEventListener('load', function() {
                 canvas.height = window.innerHeight;
             }
 
+            // hud
+            ctx.font = '20px Arial';
+            ctx.fillText(thisplayer.ammo, canvas.width - 50, canvas.height - 50)
+
+            if (thisplayer.reloadTimer != 0) {
+                ctx.fillText((thisplayer.reloadTimer / 1000).toFixed(1), canvas.width / 2, canvas.height - 50)
+            }
+
         }
 
         // get new index in player list, ie if someone disconnects
         function changePlayerNum(playernum) {
             playerNum = playernum;
-            console.log('new playernum ' + playerNum)
             
         }
     }

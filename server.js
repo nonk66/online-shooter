@@ -59,7 +59,7 @@ class Player {
         this.y = 450; // y pos
         this.width = 25; // sprite width
         this.height = 25; // sprite height
-        this.weapons = [new Weapon('Handgun', 1000, 18, 12, 1, 0, 5, 1, 0), new Weapon('Rifle', 2000, 18, 12, 1, 1, 10, 3, 0.5)]
+        this.weapons = [new Weapon('Handgun', 1000, 18, 12, 3, 0, 5, 1, 0), new Weapon('Rifle', 2000, 18, 12, 1, 1, 10, 3, 0.5)]
         this.weapon = this.weapons[0]; // weapon player is holding
         this.hasShotThisClick = false; // to prevent continued shooting while holding in semi or burst
         this.isReloading = false; // currently reloading or not
@@ -284,7 +284,7 @@ class Game {
             playerDTOs[i].y = this.players[i].y;
             playerDTOs[i].width = this.players[i].width;
             playerDTOs[i].height = this.players[i].height;
-            playerDTOs[i].ammo = this.players[i].ammo;
+            playerDTOs[i].ammo = this.players[i].weapon.currentAmmo;
             playerDTOs[i].reloadTimer = this.players[i].reloadTimer;
         }
 
@@ -334,11 +334,10 @@ io.on('connection', client => {
     connections.push(client); // add player to connections list
     const thisPlayer = connections.indexOf(client); // thisPlayer is the same as player.num i think
     game.players.push(new Player(game, thisPlayer)) // create player object for client
-    playerDTOs.push(new PlayerDTO(game.players[thisPlayer].x, game.players[thisPlayer].y, game.players[thisPlayer].width, game.players[thisPlayer].height, game.players[thisPlayer].ammo, game.players[thisPlayer].reloadTimer))
+    playerDTOs.push(new PlayerDTO(game.players[thisPlayer].x, game.players[thisPlayer].y, game.players[thisPlayer].width, game.players[thisPlayer].height, game.players[thisPlayer].weapon.currentAmmo, game.players[thisPlayer].reloadTimer))
     // ^^ creating player DTO for player, copies properties from player object
     address = client.handshake.address; // ip address of client
     client.emit('init', thisPlayer); // send init message to client along with player number
-    console.log(thisPlayer);
     client.on('mousemove', handleMouseMovement); // when recieve mouse movement update mousse pos
 
     function handleMouseMovement(playernum, x, y) {
@@ -422,7 +421,6 @@ io.on('connection', client => {
             })
         }
         
-        console.log('disconnected')
     })
 })
 
@@ -442,6 +440,7 @@ function startGameInterval() {
     const intervalId = setInterval(() => {
         io.emit('newstate', JSON.stringify(createGameState()));
         game.update();
+        
 
 
     }, 1000 / FRAMERATE);
