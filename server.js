@@ -59,7 +59,7 @@ class Player {
         this.y = 450; // y pos
         this.width = 25; // sprite width
         this.height = 25; // sprite height
-        this.weapons = [new Weapon('Handgun', 1000, 18, 12, 3, 0, 5, 1, 0), new Weapon('Rifle', 2000, 18, 12, 1, 1, 10, 3, 0.5)]
+        this.weapons = [new Weapon('Handgun', 1000, 18, 12, 3, 0, 5, 1, 0), new Weapon('Rifle', 2000, 20, 30, 4, 2, 8, 1, 0), new Weapon('Burst Rifle', 2300, 25, 30, 3.5, 1, 14, 3, 0.6)]
         this.weapon = this.weapons[0]; // weapon player is holding
         this.hasShotThisClick = false; // to prevent continued shooting while holding in semi or burst
         this.isReloading = false; // currently reloading or not
@@ -140,11 +140,12 @@ class Player {
 
 // player data transfer object with only data the client needs
 class PlayerDTO {
-    constructor(x, y, width, height, ammo, reloadTimer) {
+    constructor(x, y, width, height, weapon, ammo, reloadTimer) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.weapon = weapon;
         this.ammo = ammo;
         this.reloadTimer = reloadTimer;
     }
@@ -248,14 +249,12 @@ class UI { // User Interface
         this.fontFamily = 'Helvetica';
         this.color = 'black';
     }
-
 }
 
 class Enemy { // opposition
     constructor(game){
         this.game = game;
     }
-
 }
 
 let playerDTOs = [];
@@ -284,8 +283,10 @@ class Game {
             playerDTOs[i].y = this.players[i].y;
             playerDTOs[i].width = this.players[i].width;
             playerDTOs[i].height = this.players[i].height;
+            playerDTOs[i].weapon = this.players[i].weapon.name;
             playerDTOs[i].ammo = this.players[i].weapon.currentAmmo;
             playerDTOs[i].reloadTimer = this.players[i].reloadTimer;
+        
         }
 
         // updating bullets
@@ -328,13 +329,13 @@ const game = new Game(1600, 900);
 
 let connections = [];
 
-const weaponSlots = [1, 2]
+const weaponSlots = [1, 2, 3]
 
 io.on('connection', client => {
     connections.push(client); // add player to connections list
     const thisPlayer = connections.indexOf(client); // thisPlayer is the same as player.num i think
     game.players.push(new Player(game, thisPlayer)) // create player object for client
-    playerDTOs.push(new PlayerDTO(game.players[thisPlayer].x, game.players[thisPlayer].y, game.players[thisPlayer].width, game.players[thisPlayer].height, game.players[thisPlayer].weapon.currentAmmo, game.players[thisPlayer].reloadTimer))
+    playerDTOs.push(new PlayerDTO(game.players[thisPlayer].x, game.players[thisPlayer].y, game.players[thisPlayer].width, game.players[thisPlayer].height, game.players[thisPlayer].weapon.name, game.players[thisPlayer].weapon.currentAmmo, game.players[thisPlayer].reloadTimer))
     // ^^ creating player DTO for player, copies properties from player object
     address = client.handshake.address; // ip address of client
     client.emit('init', thisPlayer); // send init message to client along with player number

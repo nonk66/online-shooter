@@ -79,11 +79,12 @@ window.addEventListener('load', function() {
             // hud
             ctx.font = '20px Arial';
             ctx.fillText(thisplayer.ammo, canvas.width - 50, canvas.height - 50)
+            ctx.fillText(thisplayer.weapon, 50, canvas.height - 50)
+            
 
             if (thisplayer.reloadTimer != 0) {
                 ctx.fillText((thisplayer.reloadTimer / 1000).toFixed(1), canvas.width / 2, canvas.height - 50)
             }
-
         }
 
         // get new index in player list, ie if someone disconnects
