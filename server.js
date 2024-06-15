@@ -69,6 +69,20 @@ class Player {
     }
     update(){
 
+        bullets.forEach((bullet) => {
+            if (!(bullet.x < this.x + this.width &&
+                bullet.x + bullet.width > this.x &&
+                bullet.y > this.y + this.height &&
+                bullet.y + bullet.height < this.y
+            )) {
+                this.width = 15
+                this.height = 15
+            }
+
+        
+        })
+
+
         // reloading mechanism
         if (this.isReloading){
             this.reloadTimer -= 1000 / FRAMERATE;
@@ -119,6 +133,8 @@ class Player {
                 }
             }
         }
+
+        
     }
 
     shoot(startX, startY, xcor, ycor){
