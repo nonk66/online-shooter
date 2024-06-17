@@ -51,14 +51,14 @@ class Weapon {
 class Player {
     constructor(game, num){
         this.game = game;
-        this.name = num; // position in player list, ie player 1, player 2 etc
+        this.num = num; // position in player list, ie player 1, player 2 etc
         this.keys = []; // comes from client updates
         this.speed = 5; // movement speed
         this.x = 800; // x pos
         this.y = 450; // y pos
         this.width = 25; // sprite width
         this.height = 25; // sprite height
-        this.weapons = [new Weapon('Handgun', 1000, 18, 12, 3, 0, 5, 1, 0), new Weapon('Rifle', 2000, 20, 30, 4, 2, 8, 1, 0), new Weapon('Burst Rifle', 2300, 25, 30, 3.5, 1, 14, 3, 0.6)]
+        this.weapons = [new Weapon('Handgun', 1000, 18, 12, 3, 0, 5, 1, 0), new Weapon('Rifle', 2000, 20, 30, 4, 2, 8, 1, 0), new Weapon('Burst Rifle', 2300, 25, 30, 3.5, 1, 14, 3, 0.6), new Weapon('asada', 999, 100, 999, 0, 2, 999, 1, 0)]
         this.weapon = this.weapons[0]; // weapon player is holding
         this.hasShotThisClick = false; // to prevent continued shooting while holding in semi or burst
         this.isReloading = false; // currently reloading or not
@@ -68,14 +68,13 @@ class Player {
     }
     update(){
 
+        // hit registration 
         this.game.bullets.forEach((bullet) => {
-            if (!(bullet.x < this.x + this.width &&
-                bullet.x + bullet.width > this.x &&
-                bullet.y > this.y + this.height &&
-                bullet.y + bullet.height < this.y
-            )) {
-                this.width = 15
-                this.height = 15
+            console.log(this.game.checkCollision)
+            console.log('bullet shooter: ' + bullet.shooter + '. target number: ' + this.num)
+            if (this.game.checkCollision(this, bullet) && bullet.shooter != this.num) {
+                this.width = this.width * 0.9
+                this.height = this.width * 0.9
             }
 
         
@@ -146,7 +145,7 @@ class Player {
         } 
         
         // spawn projectile
-        this.game.bullets.push(new Projectile(startX, startY, distX, distY, rightOrLeft, this.weapon.speed, this.weapon.range));
+        this.game.bullets.push(new Projectile(this.num, startX, startY, distX, distY, rightOrLeft, this.weapon.speed, this.weapon.range));
     }
     reload(){
         this.isReloading = true; // self-explanatory i think
@@ -167,12 +166,15 @@ class PlayerDTO {
 }
 
 class Projectile {
-    constructor(x, y, distX, distY, rightOrLeft, speed, range){
+    constructor(shooter, x, y, distX, distY, rightOrLeft, speed, range){
+        this.shooter = shooter; // num of player that fired the bullet
         this.distX = distX; // dist from spawn pos to mouse
         this.distY = distY; // ^^
         this.rightOrLeft = rightOrLeft; // 0 is right, 1 is left
         this.x = x; // x pos
         this.y = y; // y pos
+        this.width = 10;
+        this.height = 10;
         this.speed = speed; // bullet speed
         this.xTravelled = 0; // dist travelled
         this.yTravelled = 0; // ^^
@@ -314,6 +316,15 @@ class Game {
         
     }
 
+    checkCollision(rect1, rect2){
+        return(         
+            rect1.x < rect2.x + rect2.width &&
+            rect1.x + rect1.width > rect2.x &&
+            rect1.y < rect2.y + rect2.height &&
+            rect1.height + rect1.y > rect2.y
+        )
+    }
+
 }
 
 class Connection { // pretty sure this is unused
@@ -344,7 +355,7 @@ const game = new Game(1600, 900);
 
 let connections = [];
 
-const weaponSlots = [1, 2, 3]
+const weaponSlots = [1, 2, 3, 4]
 
 io.on('connection', client => {
     connections.push(client); // add player to connections list

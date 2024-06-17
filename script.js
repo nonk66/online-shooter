@@ -65,7 +65,7 @@ window.addEventListener('load', function() {
 
             // draw bullets
             state.bullets.forEach(bullet => {
-                ctx.fillRect(bullet.x, bullet.y, 10, 10);
+                ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
             })
 
             // allow for resizing window and game updating with it
