@@ -48,7 +48,6 @@ class Weapon {
 
 
 
-
 class Player {
     constructor(game, num){
         this.game = game;
@@ -69,7 +68,7 @@ class Player {
     }
     update(){
 
-        bullets.forEach((bullet) => {
+        this.game.bullets.forEach((bullet) => {
             if (!(bullet.x < this.x + this.width &&
                 bullet.x + bullet.width > this.x &&
                 bullet.y > this.y + this.height &&
