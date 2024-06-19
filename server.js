@@ -65,6 +65,8 @@ class Player {
         this.reloadTimer = 0; // time spent on current reload
         this.mouseX = 0; // cursor x pos
         this.mouseY = 0; // cursor y pos
+        this.winWidth = 0;
+        this.winHeight = 0;
     }
     update(){
 
@@ -76,8 +78,6 @@ class Player {
                 this.width = this.width * 0.9
                 this.height = this.width * 0.9
             }
-
-        
         })
 
 
@@ -94,6 +94,8 @@ class Player {
         // movement
         if (this.keys.includes('d')){
             this.x += this.speed;
+            console.log(this.winWidth)
+            console.log(this.winHeight)
         }
         if (this.keys.includes('s')){
             this.y += this.speed;
@@ -409,6 +411,13 @@ io.on('connection', client => {
         if (game.players[playernum].keys.indexOf(key) > -1) {
             game.players[playernum].keys.splice(game.players[playernum].keys.indexOf(key), 1)
         }
+    }
+
+    // receiving window size
+    client.on('winsize', handleWinSize);
+    function handleWinSize(playernum, size) {
+        game.players[playernum].winWidth = size[0];
+        game.players[playernum].winHeight = size[1];
     }
 
 

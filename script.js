@@ -21,18 +21,17 @@ window.addEventListener('load', function() {
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        socket.emit('winsize', playerNum, [canvas.width, canvas.height])
 
         // input handler, just sends input to the server
         class InputHandler {
             constructor() {
                 window.addEventListener('mousemove', event => {
                     socket.emit('mousemove', playerNum, event.clientX, event.clientY);
-
                 })
                 window.addEventListener('keydown', event => {
                     socket.emit('keydown', playerNum, event.key);
                 })
-
                 window.addEventListener('keyup', event => {
                     socket.emit('keyup', playerNum, event.key);
                 })
@@ -71,9 +70,11 @@ window.addEventListener('load', function() {
             // allow for resizing window and game updating with it
             if (canvas.width != window.innerWidth) {
                 canvas.width = window.innerWidth;
+                socket.emit('winsize', playerNum, [canvas.width, canvas.height])
             }
             if (canvas.height != window.innerHeight) {
                 canvas.height = window.innerHeight;
+                socket.emit('winsize', playerNum, [canvas.width, canvas.height])
             }
 
             // hud
