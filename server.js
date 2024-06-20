@@ -65,8 +65,9 @@ class Player {
         this.reloadTimer = 0; // time spent on current reload
         this.mouseX = 0; // cursor x pos
         this.mouseY = 0; // cursor y pos
-        this.winWidth = 0;
-        this.winHeight = 0;
+        this.winWidth = 0; // client window width
+        this.winHeight = 0; // client window height
+        this.winpos = [[(this.x + (this.width / 2)) - (this.winWidth / 2), (this.x + (this.width / 2)) + (this.winWidth / 2)], [(this.y + (this.width / 2)) + (this.winHeight / 2), (this.y + (this.width / 2)) - (this.winHeight / 2)]]
     }
     update(){
 
@@ -94,17 +95,31 @@ class Player {
         // movement
         if (this.keys.includes('d')){
             this.x += this.speed;
-            console.log(this.winWidth)
-            console.log(this.winHeight)
+            console.log(this.winpos)
+
+            this.winpos[0][0] += this.speed
+            this.winpos[0][1] += this.speed
+
+
+            
         }
         if (this.keys.includes('s')){
             this.y += this.speed;
+
+            this.winpos[1][0] += this.speed
+            this.winpos[1][1] += this.speed
         }
         if (this.keys.includes('a')){
             this.x -= this.speed;
+
+            this.winpos[0][0] -= this.speed
+            this.winpos[0][1] -= this.speed
         }
         if (this.keys.includes('w')){
             this.y -= this.speed;
+
+            this.winpos[1][0] -= this.speed
+            this.winpos[1][1] -= this.speed
         }
 
         // checks for whether player can fire when they click
@@ -156,7 +171,7 @@ class Player {
 
 // player data transfer object with only data the client needs
 class PlayerDTO {
-    constructor(x, y, width, height, weapon, ammo, reloadTimer) {
+    constructor(x, y, width, height, weapon, ammo, reloadTimer, winpos) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -164,6 +179,7 @@ class PlayerDTO {
         this.weapon = weapon;
         this.ammo = ammo;
         this.reloadTimer = reloadTimer;
+        this.winpos = winpos;
     }
 }
 
@@ -305,6 +321,7 @@ class Game {
             playerDTOs[i].weapon = this.players[i].weapon.name;
             playerDTOs[i].ammo = this.players[i].weapon.currentAmmo;
             playerDTOs[i].reloadTimer = this.players[i].reloadTimer;
+            playerDTOs[i].winpos = this.players[i].winpos;
         
         }
 
@@ -363,7 +380,7 @@ io.on('connection', client => {
     connections.push(client); // add player to connections list
     const thisPlayer = connections.indexOf(client); // thisPlayer is the same as player.num i think
     game.players.push(new Player(game, thisPlayer)) // create player object for client
-    playerDTOs.push(new PlayerDTO(game.players[thisPlayer].x, game.players[thisPlayer].y, game.players[thisPlayer].width, game.players[thisPlayer].height, game.players[thisPlayer].weapon.name, game.players[thisPlayer].weapon.currentAmmo, game.players[thisPlayer].reloadTimer))
+    playerDTOs.push(new PlayerDTO(game.players[thisPlayer].x, game.players[thisPlayer].y, game.players[thisPlayer].width, game.players[thisPlayer].height, game.players[thisPlayer].weapon.name, game.players[thisPlayer].weapon.currentAmmo, game.players[thisPlayer].reloadTimer, game.players[thisPlayer].winpos))
     // ^^ creating player DTO for player, copies properties from player object
     address = client.handshake.address; // ip address of client
     client.emit('init', thisPlayer); // send init message to client along with player number

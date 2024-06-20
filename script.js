@@ -59,12 +59,20 @@ window.addEventListener('load', function() {
 
             // draw players
             state.players.forEach(player => {
-                ctx.fillRect(player.x, player.y, player.width, player.height);
+
+                // check whether player is on screen
+                if (thisplayer.winpos[0][0] - player.width < player.x < thisplayer.winpos[0][1] + player.width && thisplayer.winpos[1][0] - player.height < player.y < thisplayer.winpos[1][1] + player.height) {
+                    ctx.fillRect(player.x - thisplayer.winpos[0][0], player.y - thisplayer.winpos[0][1], player.width, player.height);
+                }
             })
 
             // draw bullets
             state.bullets.forEach(bullet => {
-                ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+
+                // check whether bullet is on screen
+                if (thisplayer.winpos[0][0] - bullet.width < bullet.x < thisplayer.winpos[0][1] + bullet.width && thisplayer.winpos[1][0] - bullet.height < bullet.y < thisplayer.winpos[1][1] + bullet.height) {
+                    ctx.fillRect(bullet.x - thisplayer.winpos[0][0], bullet.y - thisplayer.winpos[1][0], bullet.width, bullet.height);
+                }
             })
 
             // allow for resizing window and game updating with it
