@@ -61,8 +61,12 @@ window.addEventListener('load', function() {
             state.players.forEach(player => {
 
                 // check whether player is on screen
-                if (thisplayer.winpos[0][0] - player.width < player.x < thisplayer.winpos[0][1] + player.width && thisplayer.winpos[1][0] - player.height < player.y < thisplayer.winpos[1][1] + player.height) {
-                    ctx.fillRect(player.x - thisplayer.winpos[0][0], player.y - thisplayer.winpos[0][1], player.width, player.height);
+                if (thisplayer.winpos[0][0] - player.width < player.x < thisplayer.winpos[0][1] + player.width && 
+                    thisplayer.winpos[1][0] - player.height < player.y < thisplayer.winpos[1][1] + player.height) {
+                    console.log('winpos: ' + thisplayer.winpos)
+                    console.log('coords: ' + [player.x, player.y])
+                    console.log('relative coords: ' + [player.x - thisplayer.winpos[0][0], player.y - thisplayer.winpos[1][0]])
+                    ctx.fillRect(player.x - thisplayer.winpos[0][0], player.y - thisplayer.winpos[1][0], player.width, player.height);
                 }
             })
 

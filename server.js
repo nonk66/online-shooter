@@ -73,8 +73,8 @@ class Player {
 
         // hit registration 
         this.game.bullets.forEach((bullet) => {
-            console.log(this.game.checkCollision)
-            console.log('bullet shooter: ' + bullet.shooter + '. target number: ' + this.num)
+            // console.log(this.game.checkCollision)
+            // console.log('bullet shooter: ' + bullet.shooter + '. target number: ' + this.num)
             if (this.game.checkCollision(this, bullet) && bullet.shooter != this.num) {
                 this.width = this.width * 0.9
                 this.height = this.width * 0.9
@@ -95,7 +95,7 @@ class Player {
         // movement
         if (this.keys.includes('d')){
             this.x += this.speed;
-            console.log(this.winpos)
+            
 
             this.winpos[0][0] += this.speed
             this.winpos[0][1] += this.speed
@@ -419,7 +419,13 @@ io.on('connection', client => {
                 game.players[playernum].isReloading = false;
                 game.players[playernum].reloadTimer = 0;
             }
+
+        // misc debugging key
+        } else if (key === 'g') {
+            console.log(game.players[playernum].winpos)
+            console.log([game.players[playernum].x, game.players[playernum].y])
         }
+
     }
 
     // when client releases key
@@ -427,6 +433,8 @@ io.on('connection', client => {
     function handleKeyUp(playernum, key) {
         if (game.players[playernum].keys.indexOf(key) > -1) {
             game.players[playernum].keys.splice(game.players[playernum].keys.indexOf(key), 1)
+        } else if (key === 'g') {
+            console.log('------- end of debug info -------')
         }
     }
 
@@ -435,6 +443,9 @@ io.on('connection', client => {
     function handleWinSize(playernum, size) {
         game.players[playernum].winWidth = size[0];
         game.players[playernum].winHeight = size[1];
+        console.log(size)
+        game.players[playernum].winpos = [[(game.players[playernum].x + (game.players[playernum].width / 2)) - (game.players[playernum].winWidth / 2), (game.players[playernum].x + (game.players[playernum].width / 2)) + (game.players[playernum].winWidth / 2)], [(game.players[playernum].y + (game.players[playernum].width / 2)) + (game.players[playernum].winHeight / 2), (game.players[playernum].y + (game.players[playernum].width / 2)) - (game.players[playernum].winHeight / 2)]]
+
     }
 
 
