@@ -58,7 +58,7 @@ class Player {
         this.y = 450; // y pos
         this.width = 25; // sprite width
         this.height = 25; // sprite height
-        this.weapons = [new Weapon('Handgun', 1000, 18, 12, 3, 0, 5, 1, 0), new Weapon('Rifle', 2000, 20, 30, 4, 2, 8, 1, 0), new Weapon('Burst Rifle', 2300, 25, 30, 3.5, 1, 14, 3, 0.6), new Weapon('asada', 999, 100, 999, 0, 2, 999, 1, 0)]
+        this.weapons = [new Weapon('Handgun', 1000, 0.01, 12, 3, 0, 5, 1, 0), new Weapon('Rifle', 2000, 20, 30, 4, 2, 8, 1, 0), new Weapon('Burst Rifle', 2300, 25, 30, 3.5, 1, 14, 3, 0.6), new Weapon('asada', 999, 100, 999999999, 0, 2, 999, 1, 0)]
         this.weapon = this.weapons[0]; // weapon player is holding
         this.hasShotThisClick = false; // to prevent continued shooting while holding in semi or burst
         this.isReloading = false; // currently reloading or not
@@ -67,7 +67,9 @@ class Player {
         this.mouseY = 0; // cursor y pos
         this.winWidth = 0; // client window width
         this.winHeight = 0; // client window height
-        this.winpos = [[(this.x + (this.width / 2)) - (this.winWidth / 2), (this.x + (this.width / 2)) + (this.winWidth / 2)], [(this.y + (this.width / 2)) + (this.winHeight / 2), (this.y + (this.width / 2)) - (this.winHeight / 2)]]
+        this.winpos = [[(this.x + (this.width / 2)) - (this.winWidth / 2), (this.x + (this.width / 2)) + (this.winWidth / 2)], [(this.y + (this.width / 2)) - (this.winHeight / 2), (this.y + (this.width / 2)) + (this.winHeight / 2)]]
+    
+    
     }
     update(){
 
@@ -444,7 +446,7 @@ io.on('connection', client => {
         game.players[playernum].winWidth = size[0];
         game.players[playernum].winHeight = size[1];
         console.log(size)
-        game.players[playernum].winpos = [[(game.players[playernum].x + (game.players[playernum].width / 2)) - (game.players[playernum].winWidth / 2), (game.players[playernum].x + (game.players[playernum].width / 2)) + (game.players[playernum].winWidth / 2)], [(game.players[playernum].y + (game.players[playernum].width / 2)) + (game.players[playernum].winHeight / 2), (game.players[playernum].y + (game.players[playernum].width / 2)) - (game.players[playernum].winHeight / 2)]]
+        game.players[playernum].winpos = [[(game.players[playernum].x + (game.players[playernum].width / 2)) - (game.players[playernum].winWidth / 2), (game.players[playernum].x + (game.players[playernum].width / 2)) + (game.players[playernum].winWidth / 2)], [(game.players[playernum].y + (game.players[playernum].width / 2)) - (game.players[playernum].winHeight / 2), (game.players[playernum].y + (game.players[playernum].width / 2)) + (game.players[playernum].winHeight / 2)]]
 
     }
 
