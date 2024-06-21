@@ -58,13 +58,15 @@ class Player {
         this.y = 450; // y pos
         this.width = 25; // sprite width
         this.height = 25; // sprite height
-        this.weapons = [new Weapon('Handgun', 1000, 0.01, 12, 3, 0, 5, 1, 0), new Weapon('Rifle', 2000, 20, 30, 4, 2, 8, 1, 0), new Weapon('Burst Rifle', 2300, 25, 30, 3.5, 1, 14, 3, 0.6), new Weapon('asada', 999, 100, 999999999, 0, 2, 999, 1, 0)]
+        this.weapons = [new Weapon('Handgun', 1000, 1, 12, 3, 0, 5, 1, 0), new Weapon('Rifle', 2000, 20, 30, 4, 2, 8, 1, 0), new Weapon('Burst Rifle', 2300, 25, 30, 3.5, 1, 14, 3, 0.6), new Weapon('asada', 999, 100, 999999999, 0, 2, 999, 1, 0)]
         this.weapon = this.weapons[0]; // weapon player is holding
         this.hasShotThisClick = false; // to prevent continued shooting while holding in semi or burst
         this.isReloading = false; // currently reloading or not
         this.reloadTimer = 0; // time spent on current reload
         this.mouseX = 0; // cursor x pos
         this.mouseY = 0; // cursor y pos
+        this.objMouseX = 0; // cursor pos on objective coord plane
+        this.objMouseY = 0; // ^^
         this.winWidth = 0; // client window width
         this.winHeight = 0; // client window height
         this.winpos = [[(this.x + (this.width / 2)) - (this.winWidth / 2), (this.x + (this.width / 2)) + (this.winWidth / 2)], [(this.y + (this.width / 2)) - (this.winHeight / 2), (this.y + (this.width / 2)) + (this.winHeight / 2)]]
@@ -95,34 +97,38 @@ class Player {
         }
 
         // movement
-        if (this.keys.includes('d')){
-            this.x += this.speed;
-            
+        if (this.keys.includes('d') ||
+            this.keys.includes('s') ||
+            this.keys.includes('a') ||
+            this.keys.includes('w')) {
+            if (this.keys.includes('d')){
+                this.x += this.speed;
 
-            this.winpos[0][0] += this.speed
-            this.winpos[0][1] += this.speed
+                this.winpos[0][0] += this.speed
+                this.winpos[0][1] += this.speed  
+            }
+            if (this.keys.includes('s')){
+                this.y += this.speed;
 
+                this.winpos[1][0] += this.speed
+                this.winpos[1][1] += this.speed
+            }
+            if (this.keys.includes('a')){
+                this.x -= this.speed;
 
-            
+                this.winpos[0][0] -= this.speed
+                this.winpos[0][1] -= this.speed
+            }
+            if (this.keys.includes('w')){
+                this.y -= this.speed;
+
+                this.winpos[1][0] -= this.speed
+                this.winpos[1][1] -= this.speed
+            }
+        this.objMouseX = this.mouseX + this.winpos[0][0];
+        this.objMouseY = this.mouseY + this.winpos[1][0];
         }
-        if (this.keys.includes('s')){
-            this.y += this.speed;
 
-            this.winpos[1][0] += this.speed
-            this.winpos[1][1] += this.speed
-        }
-        if (this.keys.includes('a')){
-            this.x -= this.speed;
-
-            this.winpos[0][0] -= this.speed
-            this.winpos[0][1] -= this.speed
-        }
-        if (this.keys.includes('w')){
-            this.y -= this.speed;
-
-            this.winpos[1][0] -= this.speed
-            this.winpos[1][1] -= this.speed
-        }
 
         // checks for whether player can fire when they click
         if ((this.keys.includes('click') && !this.hasShotThisClick && !this.weapon.justShot && !this.weapon.justBurstFired) || 
@@ -130,7 +136,8 @@ class Player {
             
             // checks whether ammo is there to fire
             if (this.weapon.currentAmmo > 0 && !this.isReloading){
-                this.shoot(this.x + this.width / 2, this.y + this.height / 2, this.mouseX, this.mouseY);
+                this.shoot(this.x + this.width / 2, this.y + this.height / 2, this.objMouseX, this.objMouseY);
+                console.log('obj mouse coords: ' + [this.objMouseX, this.objMouseY])
                 this.weapon.justShot = true;
                 this.weapon.currentAmmo -= 1;
             }
@@ -389,8 +396,10 @@ io.on('connection', client => {
     client.on('mousemove', handleMouseMovement); // when recieve mouse movement update mousse pos
 
     function handleMouseMovement(playernum, x, y) {
-        game.players[playernum].mouseX = x;
-        game.players[playernum].mouseY = y;
+        game.players[playernum].mouseX = x
+        game.players[playernum].mouseY = y
+        game.players[playernum].objMouseX = game.players[playernum].mouseX + game.players[playernum].winpos[0][0]
+        game.players[playernum].objMouseY = game.players[playernum].mouseY + game.players[playernum].winpos[1][0]
 
     }
 
@@ -424,8 +433,11 @@ io.on('connection', client => {
 
         // misc debugging key
         } else if (key === 'g') {
-            console.log(game.players[playernum].winpos)
-            console.log([game.players[playernum].x, game.players[playernum].y])
+            console.log('winpos: ' + game.players[playernum].winpos)
+            console.log('player coords: ' + [game.players[playernum].x, game.players[playernum].y])
+            game.bullets.forEach(bullet => {
+                console.log('bullet coords: ' + [bullet.x, bullet.y])
+            })
         }
 
     }
