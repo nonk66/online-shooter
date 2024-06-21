@@ -63,10 +63,13 @@ window.addEventListener('load', function() {
                 // check whether player is on screen
                 if (thisplayer.winpos[0][0] - player.width < player.x < thisplayer.winpos[0][1] + player.width && 
                     thisplayer.winpos[1][0] - player.height < player.y < thisplayer.winpos[1][1] + player.height) {
-                    console.log('winpos: ' + thisplayer.winpos)
+                    /*console.log('winpos: ' + thisplayer.winpos)
                     console.log('coords: ' + [player.x, player.y])
                     console.log('relative coords: ' + [player.x - thisplayer.winpos[0][0], player.y - thisplayer.winpos[1][0]])
+                    */
                     ctx.fillRect(player.x - thisplayer.winpos[0][0], player.y - thisplayer.winpos[1][0], player.width, player.height);
+                } else {
+                    console.log('not drawing this fella')
                 }
             })
 
@@ -74,8 +77,11 @@ window.addEventListener('load', function() {
             state.bullets.forEach(bullet => {
 
                 // check whether bullet is on screen
-                if (thisplayer.winpos[0][0] - bullet.width < bullet.x < thisplayer.winpos[0][1] + bullet.width && thisplayer.winpos[1][0] - bullet.height < bullet.y < thisplayer.winpos[1][1] + bullet.height) {
+                if (thisplayer.winpos[0][0] - bullet.width < bullet.x < thisplayer.winpos[0][1] + bullet.width && 
+                    thisplayer.winpos[1][0] - bullet.height < bullet.y < thisplayer.winpos[1][1] + bullet.height) {
                     ctx.fillRect(bullet.x - thisplayer.winpos[0][0], bullet.y - thisplayer.winpos[1][0], bullet.width, bullet.height);
+                } else {
+                    console.log('not drawing this bullet')
                 }
             })
 

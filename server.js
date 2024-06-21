@@ -80,8 +80,8 @@ class Player {
             // console.log(this.game.checkCollision)
             // console.log('bullet shooter: ' + bullet.shooter + '. target number: ' + this.num)
             if (this.game.checkCollision(this, bullet) && bullet.shooter != this.num) {
-                this.width = this.width * 0.9
-                this.height = this.width * 0.9
+                this.width = this.width * 0.99
+                this.height = this.width * 0.99
             }
         })
 
